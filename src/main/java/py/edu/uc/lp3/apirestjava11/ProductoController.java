@@ -6,75 +6,43 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/productos")
 public class ProductoController {
 
-    private List<Producto> productos = new ArrayList<>();
+    private final ProductoService productoService;
 
-    // Constructor con algunos productos de ejemplo
-    public ProductoController() {
-        productos.add(new Producto(1, "Teclado", 35.00, true));
-        productos.add(new Producto(2, "Mouse", 25.00, true));
-        productos.add(new Producto(3, "Monitor", 200.00, true));
+    public ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
     }
 
-    // Obtener todos los productos
-    @GetMapping
-    public ResponseEntity<List<Producto>> getAllProductos() {
-        return ResponseEntity.ok(productos);
-    }
+    // Validar si el listado de productos cumple con el monto mínimo de compra
+    @PostMapping("/validar-compra")
+    public ResponseEntity<String> validarCompra(@RequestBody(required = false) List<Producto> productos) {
 
-    // Obtener un producto por su ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Producto> getProductoById(@PathVariable int id) {
-        Optional<Producto> productoOpt = productos.stream()
-                .filter(producto -> producto.getId_producto() == id)
-                .findFirst();
+        // Si la lista es nula o está vacía, se genera un mock de productos
+        if (productos == null || productos.isEmpty()) {
+            productos = generarProductosMock();
+        }
 
-        if (productoOpt.isPresent()) {
-            return ResponseEntity.ok(productoOpt.get());
+        double montoTotal = productoService.calcularMontoTotal(productos);
+        boolean cumpleCondicion = productoService.validarMontoMinimoCompra(productos);
+
+        if (cumpleCondicion) {
+            return ResponseEntity.ok("La compra cumple con el monto mínimo. Monto total: " + montoTotal);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("La compra no cumple con el monto mínimo de " + productoService.getMontoMinimoCompra() + ". Monto total: " + montoTotal);
         }
     }
 
-    // Agregar un nuevo producto
-    @PostMapping
-    public ResponseEntity<Producto> addProducto(@RequestBody Producto nuevoProducto) {
-        productos.add(nuevoProducto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
-    }
-
-    // Actualizar un producto existente
-    @PutMapping("/{id}")
-    public ResponseEntity<Producto> updateProducto(@PathVariable int id, @RequestBody Producto productoActualizado) {
-        Optional<Producto> productoOpt = productos.stream()
-                .filter(producto -> producto.getId_producto() == id)
-                .findFirst();
-
-        if (productoOpt.isPresent()) {
-            Producto productoExistente = productoOpt.get();
-            productoExistente.setNombre(productoActualizado.getNombre());
-            productoExistente.setPrecio(productoActualizado.getPrecio());
-            productoExistente.setDisponibilidad(productoActualizado.isDisponibilidad());
-            return ResponseEntity.ok(productoExistente);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-    // Eliminar un producto por su ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProducto(@PathVariable int id) {
-        boolean removed = productos.removeIf(producto -> producto.getId_producto() == id);
-
-        if (removed) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    // Método para generar una lista de productos de ejemplo
+    private List<Producto> generarProductosMock() {
+        List<Producto> productosMock = new ArrayList<>();
+        productosMock.add(new Producto(1, "Teclado Mock", 35.00, true));
+        productosMock.add(new Producto(2, "Mouse Mock", 25.00, true));
+        productosMock.add(new Producto(3, "Monitor Mock", 200.00, true));
+        return productosMock;
     }
 }
