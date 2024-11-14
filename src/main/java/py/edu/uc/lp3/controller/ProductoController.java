@@ -1,50 +1,42 @@
 package py.edu.uc.lp3.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import py.edu.uc.lp3.service.ProductoService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import py.edu.uc.lp3.domain.Producto;
+import py.edu.uc.lp3.request.CompraProductoRequest;
+import py.edu.uc.lp3.response.CompraResponse;
+import py.edu.uc.lp3.service.ProductoService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/productos")
+@RequestMapping("/api/productos")
 public class ProductoController {
 
     private final ProductoService productoService;
 
+    @Autowired
     public ProductoController(ProductoService productoService) {
         this.productoService = productoService;
     }
 
-    // Validar si el listado de productos cumple con el monto mínimo de compra
-    @PostMapping("/validar-compra")
-    public ResponseEntity<String> validarCompra(@RequestBody(required = false) List<Producto> productos) {
-
-        // Si la lista es nula o está vacía, se genera un mock de productos
-        if (productos == null || productos.isEmpty()) {
-            productos = generarProductosMock();
-        }
-
-        double montoTotal = productoService.calcularMontoTotal(productos);
-        boolean cumpleCondicion = productoService.validarMontoMinimoCompra(productos);
-
-        if (cumpleCondicion) {
-            return ResponseEntity.ok("La compra cumple con el monto mínimo. Monto total: " + montoTotal);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("La compra no cumple con el monto mínimo de " + productoService.getMontoMinimoCompra() + ". Monto total: " + montoTotal);
-        }
+    // Endpoint para crear múltiples productos en una sola solicitud (bulk insert)
+    @PostMapping("/bulk-insert")
+    public ResponseEntity<List<Producto>> bulkInsert(@RequestBody List<Producto> productos) {
+        List<Producto> savedProductos = productoService.bulkInsert(productos);
+        return new ResponseEntity<>(savedProductos, HttpStatus.CREATED);
+    }
+    @PostMapping("/comprar")
+    public CompraResponse realizarCompra(@RequestBody List<CompraProductoRequest> productosCompra) {
+        return productoService.procesarCompra(productosCompra);
     }
 
-    // Método para generar una lista de productos de ejemplo
-    private List<Producto> generarProductosMock() {
-        List<Producto> productosMock = new ArrayList<>();
-        productosMock.add(new Producto(1, "Teclado Mock", 35.00, true));
-        productosMock.add(new Producto(2, "Mouse Mock", 25.00, true));
-        productosMock.add(new Producto(3, "Monitor Mock", 200.00, true));
-        return productosMock;
-    }
+
+    // Otros métodos CRUD pueden agregarse aquí si son necesarios
 }
+

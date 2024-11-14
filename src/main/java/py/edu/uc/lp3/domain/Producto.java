@@ -1,6 +1,18 @@
 package py.edu.uc.lp3.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "producto")
 public class Producto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO) // Añade esta línea para la generación automática de ID
+    private Long id;
+
     private int id_producto;
     private String nombre;
     private double precio;
@@ -14,12 +26,18 @@ public class Producto {
         this.disponibilidad = disponibilidad;
     }
 
-    // Constructor sin parámetros (opcional, si quieres uno vacío)
-    public Producto() {
-        // Constructor vacío si es necesario
-    }
+    // Constructor sin parámetros
+    public Producto() {}
 
     // Getters y Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public int getId_producto() {
         return id_producto;
     }
