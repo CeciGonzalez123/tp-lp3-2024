@@ -1,51 +1,51 @@
 package py.edu.uc.lp3.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "tipo", discriminatorType = DiscriminatorType.STRING)
 public class Persona implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Asegúrate de que esta anotación esté presente y configurada
     private long id;
-
-    private static final long serialVersionUID = -4419931048984717671L;
 
     private String nombre;
     private String sexo;
     private String apellido;
-
     private Integer edad;
     private Integer numeroCedula;
     public static final String NACIONALIDAD = "Paraguayo";
 
-    public Persona() {
-        // TODO Auto-generated constructor stub
-
-    }
+    // Constructores
+    public Persona() {}
 
     public Persona(String nombre, String apellido, Integer edad) {
-
         this.nombre = nombre;
         this.apellido = apellido;
         this.edad = edad;
     }
 
     public Persona(Integer numeroCedula, String nombre) {
-        super();
-        this.nombre = nombre;
         this.numeroCedula = numeroCedula;
+        this.nombre = nombre;
     }
 
-    public Persona(String nombre2, String apellido2, Integer edad2, Integer nroCedula) {
-        this(nombre2, apellido2, edad2);
-        setNumeroCedula(nroCedula);
+    public Persona(String nombre, String apellido, Integer edad, Integer numeroCedula) {
+        this(nombre, apellido, edad);
+        setNumeroCedula(numeroCedula);
     }
 
+    // Getters y Setters
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getNombre() {
         return nombre;
@@ -53,6 +53,14 @@ public class Persona implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
 
     public String getApellido() {
@@ -78,21 +86,4 @@ public class Persona implements Serializable {
     public void setNumeroCedula(Integer numeroCedula) {
         this.numeroCedula = numeroCedula;
     }
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
-
-
 }

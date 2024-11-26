@@ -1,18 +1,26 @@
 package py.edu.uc.lp3.domain;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import java.util.Date;
+
+@Entity
+@DiscriminatorValue("Usuario")
 public class Usuario extends Persona {
     protected String nombreUsuario;
     private String contrasena;
-    public java.util.Date fechaRegistro;
+    public Date fechaRegistro;
 
-    // Constructor modificado
-    public Usuario(String nombre, String apellido, Integer edad, Integer numeroCedula, String nombreUsuario, String contrasena, java.util.Date fechaRegistro) {
-        super(nombre, apellido, edad, numeroCedula); // Llama al constructor de Persona con los parámetros correctos
+    // Constructor
+    public Usuario(String nombre, String apellido, Integer edad, Integer numeroCedula, String nombreUsuario, String contrasena, Date fechaRegistro) {
+        super(nombre, apellido, edad, numeroCedula);
         this.nombreUsuario = nombreUsuario;
         this.contrasena = contrasena;
         this.fechaRegistro = fechaRegistro;
     }
 
+    // Constructor sin parámetros (necesario para JPA)
+    public Usuario() {}
 
     // Getters y Setters
     public String getNombreUsuario() {
@@ -31,11 +39,12 @@ public class Usuario extends Persona {
         this.contrasena = contrasena;
     }
 
-    public java.util.Date getFechaRegistro() {
+    public Date getFechaRegistro() {
         return fechaRegistro;
     }
 
-    public void setFechaRegistro(java.util.Date fechaRegistro) {
+    public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
 }
+

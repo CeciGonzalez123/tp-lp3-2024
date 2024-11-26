@@ -27,11 +27,13 @@ public class PersonaService {
         return esMayor;
     }
 
-    // Método para recuperar todas las personas
+
+    // Método para recuperar todas las personas desde la base de datos
     public List<Persona> getAllPersonas() {
-        logger.info("Recuperando todas las personas");
-        return personas;
+        logger.info("Recuperando todas las personas desde la base de datos");
+        return (List<Persona>) personaRepository.findAll();
     }
+
 
     // Método para obtener una persona por su ID
     public Persona getPersonaById(Long id) {

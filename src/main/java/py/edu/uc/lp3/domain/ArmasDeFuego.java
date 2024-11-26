@@ -1,5 +1,9 @@
 package py.edu.uc.lp3.domain;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
+@Entity
+@DiscriminatorValue("ArmasDeFuego")
 public class ArmasDeFuego extends Armas {
     public String tipoMunicion;
     protected double cadencia;
@@ -20,7 +24,7 @@ public class ArmasDeFuego extends Armas {
         this.tipoMunicion = tipoMunicion;
     }
 
-    public double getCadencia() {
+    public Double getCadencia() {
         return cadencia;
     }
 

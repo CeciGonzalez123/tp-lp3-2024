@@ -3,14 +3,14 @@ package py.edu.uc.lp3.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "producto")
+@Inheritance(strategy = InheritanceType.JOINED) // O SINGLE_TABLE si prefieres una tabla única
+@DiscriminatorColumn(name = "tipo", discriminatorType = DiscriminatorType.STRING)
 public class Producto {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) // Añade esta línea para la generación automática de ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private int id_producto;

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: py.edu.uc.lp3.apirestjava11.ApirestJava11ApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.153 s - in py.edu.uc.lp3.apirestjava11.ApirestJava11ApplicationTests

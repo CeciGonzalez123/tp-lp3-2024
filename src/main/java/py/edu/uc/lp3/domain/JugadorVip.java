@@ -1,33 +1,31 @@
 package py.edu.uc.lp3.domain;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import java.util.Date;
-import java.util.List;
 
+@Entity
+@DiscriminatorValue("JugadorVip")
 public class JugadorVip extends Jugador {
-    public List<String> beneficiosVip;
-    public boolean suscripcionActiva;
+    private boolean vip;
 
-    // Constructor modificado
-    public JugadorVip(String nombre, String apellido, Integer edad, Integer numeroCedula, String nombreUsuario, String contrasena, Date fechaRegistro, int nivel, int puntos, double tiempoJugado, List<String> beneficiosVip, boolean suscripcionActiva) {
+    // Constructor sin parámetros
+    public JugadorVip() {
+        super();
+    }
+
+    // Constructor con parámetros
+    public JugadorVip(String nombre, String apellido, Integer edad, Integer numeroCedula, String nombreUsuario, String contrasena, Date fechaRegistro, int nivel, int puntos, double tiempoJugado, boolean vip) {
         super(nombre, apellido, edad, numeroCedula, nombreUsuario, contrasena, fechaRegistro, nivel, puntos, tiempoJugado);
-        this.beneficiosVip = beneficiosVip;
-        this.suscripcionActiva = suscripcionActiva;
+        this.vip = vip;
     }
 
     // Getters y Setters
-    public List<String> getBeneficiosVip() {
-        return beneficiosVip;
+    public boolean isVip() {
+        return vip;
     }
 
-    public void setBeneficiosVip(List<String> beneficiosVip) {
-        this.beneficiosVip = beneficiosVip;
-    }
-
-    public boolean isSuscripcionActiva() {
-        return suscripcionActiva;
-    }
-
-    public void setSuscripcionActiva(boolean suscripcionActiva) {
-        this.suscripcionActiva = suscripcionActiva;
+    public void setVip(boolean vip) {
+        this.vip = vip;
     }
 }

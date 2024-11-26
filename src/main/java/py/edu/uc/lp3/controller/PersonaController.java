@@ -1,6 +1,8 @@
 package py.edu.uc.lp3.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import py.edu.uc.lp3.domain.Persona;
 import py.edu.uc.lp3.service.PersonaService;
@@ -38,9 +40,11 @@ public class PersonaController {
 
     // Endpoint para obtener todas las personas
     @GetMapping
-    public List<Persona> getAllPersonas() {
-        return personaService.getAllPersonas();
+    public ResponseEntity<List<Persona>> getAllPersonas() {
+        List<Persona> personas = personaService.getAllPersonas();
+        return new ResponseEntity<>(personas, HttpStatus.OK);
     }
+
 
     // Endpoint para obtener una persona por su ID
     @GetMapping("/{id}")

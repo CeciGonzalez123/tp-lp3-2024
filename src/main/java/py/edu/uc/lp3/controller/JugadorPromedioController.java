@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import py.edu.uc.lp3.service.JugadorService;
 import py.edu.uc.lp3.domain.JugadorPromedio;
+import py.edu.uc.lp3.service.JugadorService;
 
 @RestController
-@RequestMapping("/jugadores/promedio")
+@RequestMapping("/api/jugadores-promedio")
 public class JugadorPromedioController {
 
     private final JugadorService jugadorService;
@@ -18,17 +18,27 @@ public class JugadorPromedioController {
         this.jugadorService = jugadorService;
     }
 
-    // Endpoint para validar si un JugadorPromedio puede participar en un torneo
+    // Endpoint para validar si un jugador promedio puede participar en el torneo
     @PostMapping("/validar-participacion")
-    public ResponseEntity<String> validarParticipacion(@RequestBody JugadorPromedio jugadorPromedio) {
-        boolean puedeParticipar = jugadorService.puedeParticiparEnTorneo(jugadorPromedio);
+    public ResponseEntity<String> validarParticipacion(@RequestBody JugadorPromedio jugador) {
+        boolean puedeParticipar = jugadorService.puedeParticiparEnTorneo(jugador);
 
-        if (puedeParticipar && jugadorPromedio.getNumPartidasJugadas() > 10) {
-            return ResponseEntity.ok("El Jugador Promedio cumple con los requisitos para participar en el torneo.");
+        if (puedeParticipar) {
+            return ResponseEntity.ok("El jugador cumple con los requisitos para participar en el torneo.");
         } else {
-            String mensaje = !puedeParticipar ? "El Jugador Promedio no cumple con los requisitos de nivel o puntos. "
-                    : "El Jugador Promedio no ha jugado suficientes partidas.";
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mensaje);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("El jugador no cumple con los requisitos mínimos para participar en el torneo.");
+        }
+    }
+
+    // Endpoint para agregar un nuevo jugador promedio
+    @PostMapping("/agregar-jugador-promedio")
+    public ResponseEntity<JugadorPromedio> agregarJugadorPromedio(@RequestBody JugadorPromedio jugador) {
+        try {
+            JugadorPromedio jugadorGuardado = (JugadorPromedio) jugadorService.guardarJugador(jugador);
+            return new ResponseEntity<>(jugadorGuardado, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

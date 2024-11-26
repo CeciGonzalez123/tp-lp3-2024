@@ -1,5 +1,9 @@
 package py.edu.uc.lp3.domain;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
+@Entity
+@DiscriminatorValue("Melee")
 public class Melee extends Armas {
     public String material;
     public double longitud;
